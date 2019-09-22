@@ -45,13 +45,13 @@ class PlayOffService
           {
             team: division_a_team,
             enemy_team_id: division_b_team.id,
-            points: rand(0..10),
+            points: rand(5..10),
             stage: 'quarterfinals'
           },
           {
             team: division_b_team,
             enemy_team_id: division_a_team.id,
-            points: rand(0..10),
+            points: rand(0..4),
             stage: 'quarterfinals'
           }
         ]
@@ -81,13 +81,13 @@ class PlayOffService
           {
             team_id: first_team_id,
             enemy_team_id: second_team_id,
-            points: rand(0..10),
+            points: rand(5..10),
             stage: 'semifinals'
           },
           {
             team_id: second_team_id,
             enemy_team_id: first_team_id,
-            points: rand(0..10),
+            points: rand(0..4),
             stage: 'semifinals'
           }
         ]
@@ -113,13 +113,13 @@ class PlayOffService
         {
           team_id: first_team_id,
           enemy_team_id: second_team_id,
-          points: rand(0..10),
+          points: rand(5..10),
           stage: 'final'
         },
         {
           team_id: second_team_id,
           enemy_team_id: first_team_id,
-          points: rand(0..10),
+          points: rand(0..4),
           stage: 'final'
         }
       ]

@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  result: MyString
+  tournament: one
+  division: one
+  team: one
+
+two:
+  title: MyString
+  result: MyString
+  tournament: two
+  division: two
+  team: two

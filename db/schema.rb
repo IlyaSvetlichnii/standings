@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_22_053806) do
+ActiveRecord::Schema.define(version: 2019_09_22_073230) do
 
   create_table "divisions", force: :cascade do |t|
     t.string "title"
@@ -27,21 +27,37 @@ ActiveRecord::Schema.define(version: 2019_09_22_053806) do
   end
 
   create_table "team_matches", force: :cascade do |t|
-    t.integer "match_id"
+    t.integer "tournament_id"
     t.integer "team_id"
-    t.string "points"
+    t.integer "enemy_team_id"
+    t.integer "points"
+    t.string "stage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["match_id"], name: "index_team_matches_on_match_id"
     t.index ["team_id"], name: "index_team_matches_on_team_id"
+    t.index ["tournament_id"], name: "index_team_matches_on_tournament_id"
   end
 
   create_table "teams", force: :cascade do |t|
     t.string "title"
-    t.integer "devision_id"
+    t.integer "division_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["devision_id"], name: "index_teams_on_devision_id"
+    t.index ["division_id"], name: "index_teams_on_division_id"
+  end
+
+  create_table "tournament_stages", force: :cascade do |t|
+    t.string "title"
+    t.integer "total_points"
+    t.string "result"
+    t.integer "tournament_id"
+    t.integer "division_id"
+    t.integer "team_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["division_id"], name: "index_tournament_stages_on_division_id"
+    t.index ["team_id"], name: "index_tournament_stages_on_team_id"
+    t.index ["tournament_id"], name: "index_tournament_stages_on_tournament_id"
   end
 
   create_table "tournaments", force: :cascade do |t|

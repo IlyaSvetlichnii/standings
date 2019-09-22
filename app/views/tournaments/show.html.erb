@@ -1,0 +1,39 @@
+<%#= link_to "Generate result", tournaments_division_result_path(division_id: division.id, tournament_id: @tournament.id), method: :post %>
+
+<table style="width:100%">
+  <%= link_to "Generate result division A", tournaments_division_result_path(division_id: @division_a.id, tournament_id: @tournament.id), method: :post %>
+  <tr>
+    <th>Team name</th>
+    <th>Points</th>
+  </tr>
+  <% @tournament_stages_a.each do |division| %>
+    <tr>
+      <td><%= division.team.title %></td>
+      <td><%= division.total_points %></td>
+    </tr>
+  <% end %>
+</table>
+
+
+<table style="width:100%">
+  <%= link_to "Generate resul division B", tournaments_division_result_path(division_id: @division_b.id, tournament_id: @tournament.id), method: :post %>
+  <tr>
+    <th>Team name</th>
+    <th>Points</th>
+  </tr>
+  <% @tournament_stages_b.each do |division| %>
+    <tr>
+      <td><%= division.team.title %></td>
+      <td><%= division.total_points %></td>
+    </tr>
+  <% end %>
+</table>
+
+
+<table style="width:100%">
+  <%= link_to "Generate result Play-Off", tournaments_play_off_result_path(tournament_id: @tournament.id), method: :post %>
+  <%# <tr>
+    <th>Team name</th>
+    <th>Points</th>
+  </tr> %>
+</table>

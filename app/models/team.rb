@@ -1,3 +1,5 @@
 class Team < ApplicationRecord
-  belongs_to :devision
+  belongs_to :division
+
+  has_many :team_matchs
 end

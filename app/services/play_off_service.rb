@@ -1,0 +1,98 @@
+class PlayOffService
+  def initialize(tournament:)
+    @tournament  = tournament
+    @division_a  = Division.where(title: "Division A").first
+    @division_b  = Division.where(title: "Division B").first
+
+    _best_team_devision_a
+    _best_division_b
+  end
+
+  def play_off_builder
+    _result_quarterfinals
+    _result_semifinals
+    # binding.pry
+  end
+
+  private
+
+  def _best_team_devision_a
+    tournament_stages_a = TournamentStage.where(
+      division_id: @division_a,
+      tournament_id: @tournament
+    ).order('total_points DESC').first(4)
+
+    team_ids         = tournament_stages_a.pluck(:team_id)
+    @best_devision_a = Team.where(id: team_ids)
+  end
+
+  def _best_division_b
+    # меняю сортировку по очкам что бы лучшая команда из одного дивизиона
+    # сыграла c худшей командой из другого дивизиона
+    tournament_stages_b = TournamentStage.where(
+      division_id: @division_b,
+      tournament_id: @tournament
+    ).order('total_points ASC').last(4)
+
+    team_ids         = tournament_stages_b.pluck(:team_id)
+    @best_devision_b = Team.where(id: team_ids)
+  end
+
+  def _result_quarterfinals
+    @best_devision_a.zip(@best_devision_b).each do |division_a_team, division_b_team|
+      @tournament.team_matchs.create(
+        [
+          {
+            team: division_a_team,
+            enemy_team_id: division_b_team.id,
+            points: rand(0..10),
+            stage: 'quarterfinals'
+          },
+          {
+            team: division_b_team,
+            enemy_team_id: division_a_team,
+            points: rand(0..10),
+            stage: 'quarterfinals'
+          }
+        ]
+      )
+    end
+    # binding.pry
+    @tournament.team_matchs.where(stage: 'quarterfinals').each do |match|
+      _determine_winner(match)
+    end
+  end
+
+  def _result_semifinals
+    @tournament.tournament_stages.where(title: 'quarterfinals', result: 'win').each do |first, second|
+    end
+  end
+
+  def _determine_winner(match)
+    # binding.pry
+    return nil if TeamMatch.where(stage: match.stage, team_id: match.enemy_team_id).first.nil?
+
+    current_team_points = match.points
+    enemy_points        = TeamMatch.where(stage: match.stage, team_id: match.enemy_team_id).first.points
+
+    TournamentStage.create(
+      tournament_id: match.tournament_id,
+      title: match.stage,
+      division_id: match.team.division.id,
+      team_id: match.team_id,
+      total_points: match.points,
+      result: _match_result(current_team_points, enemy_points)
+    )
+  end
+
+  def _match_result(first_team_point, second_team_point)
+    if first_team_point > second_team_point
+      'win'
+    elsif first_team_point == second_team_point
+      # костальная переигровка на случай ничьи
+      'win'
+    else
+      'defeat'
+    end
+  end
+end

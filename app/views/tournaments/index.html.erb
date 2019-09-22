@@ -1,0 +1,11 @@
+<%#= link_to 'create tournament', tournaments_new_path %>
+
+<table>
+  <tr>
+    <% @tournaments.each do |tournament| %>
+      <td>
+        <%= link_to tournament.title, tournaments_show_path(tournament) %>
+      </td>
+    <% end %>
+  </tr>
+</table>

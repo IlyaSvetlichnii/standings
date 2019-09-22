@@ -19,13 +19,6 @@ ActiveRecord::Schema.define(version: 2019_09_22_073230) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "matches", force: :cascade do |t|
-    t.string "title"
-    t.string "stage"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "team_matches", force: :cascade do |t|
     t.integer "tournament_id"
     t.integer "team_id"

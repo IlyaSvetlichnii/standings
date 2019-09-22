@@ -37,3 +37,106 @@
     <th>Points</th>
   </tr> %>
 </table>
+
+<main id="tournament">
+	<ul class="round round-1">
+    <% @quarterfinals.each do |match| %>
+      <% enemy = get_enemy(stage: "quarterfinals", team_id: match.team_id) %>
+
+      <li class="spacer">&nbsp;</li>
+      <li class="game game-top <%= match.result %>"><%= match.team.title %> <span><%= match.total_points %></span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom <%= enemy.result %>"><%= enemy.team.title %> <span><%= enemy.total_points %></span></li>
+    <% end %>
+    <li class="spacer">&nbsp;</li>
+	</ul>
+	<ul class="round round-2">
+	  <% @semifinals.each do |match| %>
+      <% enemy = get_enemy(stage: "semifinals", team_id: match.team_id) %>
+
+      <li class="spacer">&nbsp;</li>
+      <li class="game game-top <%= match.result %>"><%= match.team.title %> <span><%= match.total_points %></span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom <%= enemy.result %>"><%= enemy.team.title %> <span><%= enemy.total_points %></span></li>
+    <% end %>
+    <li class="spacer">&nbsp;</li>
+	</ul>
+	<ul class="round round-3">
+	 <% @final.each do |match| %>
+      <% enemy = get_enemy(stage: "semifinals", team_id: match.team_id) %>
+
+      <li class="spacer">&nbsp;</li>
+      <li class="game game-top <%= match.result %>"><%= match.team.title %> <span><%= match.total_points %></span></li>
+      <li class="game game-spacer">&nbsp;</li>
+      <li class="game game-bottom <%= enemy.result %>"><%= enemy.team.title %> <span><%= enemy.total_points %></span></li>
+    <% end %>
+    <li class="spacer">&nbsp;</li>
+	</ul>
+
+	<ul class="round round-3">
+	 <% @final.each do |match| %>
+      <li class="spacer">&nbsp;</li>
+      <li class="game game-top <%= match.result %>"><%= match.team.title %> <span><%= match.total_points %></span></li>
+    <% end %>
+    <li class="spacer">&nbsp;</li>
+	</ul>
+</main>
+
+
+<style>
+/*
+ *  Flex Layout Specifics
+*/
+main{
+  display:flex;
+  flex-direction:row;
+}
+.round{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  width:200px;
+  list-style:none;
+  padding:0;
+}
+  .round .spacer{ flex-grow:1; }
+  .round .spacer:first-child,
+  .round .spacer:last-child{ flex-grow:.5; }
+
+  .round .game-spacer{
+    flex-grow:1;
+  }
+
+/*
+ *  General Styles
+*/
+body{
+  font-family:sans-serif;
+  font-size:small;
+  padding:10px;
+  line-height:1.4em;
+}
+
+li.game{
+  padding-left:20px;
+}
+
+  li.game.win{
+    font-weight:bold;
+  }
+  li.game span{
+    float:right;
+    margin-right:5px;
+  }
+
+  li.game-top{ border-bottom:1px solid #aaa; }
+
+  li.game-spacer{
+    border-right:1px solid #aaa;
+    min-height:40px;
+  }
+
+  li.game-bottom{
+    border-top:1px solid #aaa;
+  }
+</style>

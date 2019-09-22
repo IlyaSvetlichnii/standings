@@ -11,7 +11,7 @@ class PlayOffService
   def play_off_builder
     _result_quarterfinals
     _result_semifinals
-    # binding.pry
+    _result_finals
   end
 
   private
@@ -50,28 +50,87 @@ class PlayOffService
           },
           {
             team: division_b_team,
-            enemy_team_id: division_a_team,
+            enemy_team_id: division_a_team.id,
             points: rand(0..10),
             stage: 'quarterfinals'
           }
         ]
       )
     end
-    # binding.pry
+
     @tournament.team_matchs.where(stage: 'quarterfinals').each do |match|
       _determine_winner(match)
     end
   end
 
   def _result_semifinals
-    @tournament.tournament_stages.where(title: 'quarterfinals', result: 'win').each do |first, second|
+     winner_team_ids = @tournament.tournament_stages.where(
+      title: 'quarterfinals',
+      result: 'win'
+     ).pluck(:team_id)
+
+    first_group  = winner_team_ids.first(2)
+    second_group = winner_team_ids.last(2)
+
+    [first_group, second_group].each do |group|
+      first_team_id  = group.first
+      second_team_id = group.second
+
+      @tournament.team_matchs.create(
+        [
+          {
+            team_id: first_team_id,
+            enemy_team_id: second_team_id,
+            points: rand(0..10),
+            stage: 'semifinals'
+          },
+          {
+            team_id: second_team_id,
+            enemy_team_id: first_team_id,
+            points: rand(0..10),
+            stage: 'semifinals'
+          }
+        ]
+      )
+    end
+
+    @tournament.team_matchs.where(stage: 'semifinals').each do |match|
+      _determine_winner(match)
+    end
+  end
+
+  def _result_finals
+    winner_team_ids = @tournament.tournament_stages.where(
+      title: 'semifinals',
+      result: 'win'
+     ).pluck(:team_id)
+
+    first_team_id  = winner_team_ids.first
+    second_team_id = winner_team_ids.second
+
+    @tournament.team_matchs.create(
+      [
+        {
+          team_id: first_team_id,
+          enemy_team_id: second_team_id,
+          points: rand(0..10),
+          stage: 'final'
+        },
+        {
+          team_id: second_team_id,
+          enemy_team_id: first_team_id,
+          points: rand(0..10),
+          stage: 'final'
+        }
+      ]
+    )
+
+    @tournament.team_matchs.where(stage: 'final').each do |match|
+      _determine_winner(match)
     end
   end
 
   def _determine_winner(match)
-    # binding.pry
-    return nil if TeamMatch.where(stage: match.stage, team_id: match.enemy_team_id).first.nil?
-
     current_team_points = match.points
     enemy_points        = TeamMatch.where(stage: match.stage, team_id: match.enemy_team_id).first.points
 
@@ -88,11 +147,8 @@ class PlayOffService
   def _match_result(first_team_point, second_team_point)
     if first_team_point > second_team_point
       'win'
-    elsif first_team_point == second_team_point
-      # костальная переигровка на случай ничьи
-      'win'
     else
-      'defeat'
+      'leave'
     end
   end
 end

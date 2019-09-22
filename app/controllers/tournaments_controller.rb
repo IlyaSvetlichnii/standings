@@ -19,13 +19,13 @@ class TournamentsController < ApplicationController
       title: 'division',
       division_id: @division_a,
       tournament_id: @tournament
-    ).order('total_points DESC')
+    ).order('total_points DESC').first(8)
 
     @tournament_stages_b = TournamentStage.where(
       title: 'division',
       division_id: @division_b,
       tournament_id: @tournament
-    ).order('total_points DESC')
+    ).order('total_points DESC').first(8)
   end
 
   def division_result

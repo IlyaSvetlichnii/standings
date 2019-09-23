@@ -1,0 +1,5 @@
+<%= form_for @tournament, url: tournaments_create_path do |f| %>
+  Title :       <%= f.text_field :title %><br />
+  Description : <%= f.text_area :description %><br />
+  <%= f.submit %>
+<% end %>

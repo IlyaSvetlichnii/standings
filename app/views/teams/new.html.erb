@@ -1,0 +1,6 @@
+<%= form_for @team, url: teams_create_path do |f| %>
+  Title :       <%= f.text_field :title %><br />
+  <%= f.select :division_id, Division.all.map{ |c| [c.title, c.id] } %>
+
+  <%= f.submit %>
+<% end %>

@@ -1,11 +1,32 @@
-<%#= link_to 'create tournament', tournaments_new_path %>
-
 <table>
+  <%= link_to 'Create Tournament', tournaments_new_path %>
   <tr>
-    <% @tournaments.each do |tournament| %>
+    <th>Tournaments</th>
+    <th>Action</th>
+  </tr>
+  <% @tournaments.each do |tournament| %>
+    <tr>
       <td>
         <%= link_to tournament.title, tournaments_show_path(tournament) %>
       </td>
-    <% end %>
+      <td>
+        <%= link_to 'delete', tournaments_destroy_path(tournament), method: :delete %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+
+<table>
+  <%= link_to 'Create Team', teams_new_path %>
+  <tr>
+    <th>Teams</th>
   </tr>
+  <% @teams.each do |team| %>
+    <tr>
+      <td>
+        <%= team.title %>
+      </td>
+    </tr>
+  <% end %>
 </table>

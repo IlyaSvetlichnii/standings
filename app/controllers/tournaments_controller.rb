@@ -1,6 +1,7 @@
 class TournamentsController < ApplicationController
   def index
     @tournaments = Tournament.all
+    @teams       = Team.all
   end
 
   def new
@@ -8,6 +9,22 @@ class TournamentsController < ApplicationController
   end
 
   def create
+    tournament = Tournament.new(tournament_params)
+
+    if tournament.save
+      redirect_to root_path
+    else
+      #TODO если будет время, добавить обработчик ошибок
+      # вывести говорящее сообщение
+      redirect_to root_path
+    end
+  end
+
+  def destroy
+    tournament = Tournament.find(params[:format])
+    tournament.destroy
+
+    redirect_to root_path
   end
 
   def show
@@ -68,5 +85,11 @@ class TournamentsController < ApplicationController
     ).play_off_builder
 
     redirect_to tournaments_show_path(@tournament.id)
+  end
+
+  private
+
+  def tournament_params
+    params.require(:tournament).permit(:title, :description)
   end
 end

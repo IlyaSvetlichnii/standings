@@ -45,13 +45,13 @@ class PlayOffService
           {
             team: division_a_team,
             enemy_team_id: division_b_team.id,
-            points: rand(5..10),
+            points: rand(0..20),
             stage: 'quarterfinals'
           },
           {
             team: division_b_team,
             enemy_team_id: division_a_team.id,
-            points: rand(0..4),
+            points: rand(0..20),
             stage: 'quarterfinals'
           }
         ]
@@ -81,13 +81,13 @@ class PlayOffService
           {
             team_id: first_team_id,
             enemy_team_id: second_team_id,
-            points: rand(5..10),
+            points: rand(0..20),
             stage: 'semifinals'
           },
           {
             team_id: second_team_id,
             enemy_team_id: first_team_id,
-            points: rand(0..4),
+            points: rand(0..20),
             stage: 'semifinals'
           }
         ]
@@ -111,16 +111,16 @@ class PlayOffService
     @tournament.team_matchs.create(
       [
         {
-          team_id: first_team_id,
+          team_id:       first_team_id,
           enemy_team_id: second_team_id,
-          points: rand(5..10),
-          stage: 'final'
+          points:        rand(0..20),
+          stage:         'final'
         },
         {
-          team_id: second_team_id,
+          team_id:       second_team_id,
           enemy_team_id: first_team_id,
-          points: rand(0..4),
-          stage: 'final'
+          points:        rand(0..20),
+          stage:         'final'
         }
       ]
     )
@@ -131,24 +131,53 @@ class PlayOffService
   end
 
   def _determine_winner(match)
+    return nil if _played?(match)
+
     current_team_points = match.points
-    enemy_points        = TeamMatch.where(stage: match.stage, team_id: match.enemy_team_id).first.points
+
+    enemy_match = TeamMatch.where(
+      stage:      match.stage,
+      team_id:    match.enemy_team_id,
+      tournament: @tournament.id
+    ).first
+
+    first_result, second_result = _match_result(match.points, enemy_match.points)
 
     TournamentStage.create(
-      tournament_id: match.tournament_id,
-      title: match.stage,
-      division_id: match.team.division.id,
-      team_id: match.team_id,
-      total_points: match.points,
-      result: _match_result(current_team_points, enemy_points)
+      [
+        {
+          tournament_id: match.tournament_id,
+          title:         match.stage,
+          division_id:   match.team.division.id,
+          team_id:       match.team_id,
+          total_points:  match.points,
+          result: first_result
+        },
+        {
+          tournament_id: enemy_match.tournament_id,
+          title:         enemy_match.stage,
+          division_id:   enemy_match.team.division.id,
+          team_id:       enemy_match.team_id,
+          total_points:  enemy_match.points,
+          result: second_result
+        }
+      ]
     )
+  end
+
+  def _played?(match)
+    TournamentStage.where(
+      tournament_id: match.tournament_id,
+      title:         match.stage,
+      team_id:       match.team_id,
+    ).present?
   end
 
   def _match_result(first_team_point, second_team_point)
     if first_team_point > second_team_point
-      'win'
+      return 'win', 'leave'
     else
-      'leave'
+      return 'leave', 'win'
     end
   end
 end

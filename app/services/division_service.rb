@@ -2,7 +2,7 @@ class DivisionService
   def initialize(division:, tournament:)
     @division   = division
     @tournament = tournament
-    @teams      = @division.teams
+    @teams      = _fetch_teams
   end
 
   def result_builder
@@ -57,5 +57,9 @@ class DivisionService
         total_points: points
       )
     end
+  end
+
+  def _fetch_teams
+    @division.teams.first(8)
   end
 end

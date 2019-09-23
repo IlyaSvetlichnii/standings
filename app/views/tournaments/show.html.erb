@@ -1,7 +1,10 @@
 <%#= link_to "Generate result", tournaments_division_result_path(division_id: division.id, tournament_id: @tournament.id), method: :post %>
 
 <table style="width:100%">
-  <%= link_to "Generate result division A", tournaments_division_result_path(division_id: @division_a.id, tournament_id: @tournament.id), method: :post %>
+  <% if not_played?(tournament: @tournament, stage: 'division', division: @division_a) %>
+    <%= link_to "Generate result division A", tournaments_division_result_path(division_id: @division_a.id, tournament_id: @tournament.id), method: :post %>
+  <% end %>
+
   <tr>
     <th>Team name</th>
     <th>Points</th>
@@ -16,7 +19,10 @@
 
 
 <table style="width:100%">
-  <%= link_to "Generate resul division B", tournaments_division_result_path(division_id: @division_b.id, tournament_id: @tournament.id), method: :post %>
+  <% if not_played?(tournament: @tournament, stage: 'division', division: @division_b) %>
+    <%= link_to "Generate resul division B", tournaments_division_result_path(division_id: @division_b.id, tournament_id: @tournament.id), method: :post %>
+  <% end %>
+
   <tr>
     <th>Team name</th>
     <th>Points</th>
@@ -31,18 +37,16 @@
 
 
 <table style="width:100%">
-  <%= link_to "Generate result Play-Off", tournaments_play_off_result_path(tournament_id: @tournament.id), method: :post %>
-  <%# <tr>
-    <th>Team name</th>
-    <th>Points</th>
-  </tr> %>
+  <% if not_played?(tournament: @tournament, stage: 'final') %>
+    <%= link_to "Generate result Play-Off", tournaments_play_off_result_path(tournament_id: @tournament.id), method: :post %>
+  <% end %>
 </table>
 
 <main id="tournament">
 	<ul class="round round-1">
     <% @quarterfinals.each do |stage| %>
-      <% current_match = get_current_match(stage: "quarterfinals", team_id: stage.team_id) %>
-      <% enemy_match = get_enemy_match(stage: "quarterfinals", team_id: stage.team_id) %>
+      <% current_match = get_current_match(stage: "quarterfinals", team_id: stage.team_id, tournament: @tournament) %>
+      <% enemy_match = get_enemy_match(stage: "quarterfinals", team_id: stage.team_id, tournament: @tournament) %>
 
       <li class="spacer">&nbsp;</li>
       <li class="game game-top"><%= current_match.team.title %> <span><%= current_match.points %></span></li>
@@ -53,8 +57,8 @@
 	</ul>
 	<ul class="round round-2">
     <% @semifinals.each do |stage| %>
-      <% current_match = get_current_match(stage: "semifinals", team_id: stage.team_id) %>
-      <% enemy_match = get_enemy_match(stage: "semifinals", team_id: stage.team_id) %>
+      <% current_match = get_current_match(stage: "semifinals", team_id: stage.team_id, tournament: @tournament) %>
+      <% enemy_match = get_enemy_match(stage: "semifinals", team_id: stage.team_id, tournament: @tournament) %>
 
       <li class="spacer">&nbsp;</li>
       <li class="game game-top"><%= current_match.team.title %> <span><%= current_match.points %></span></li>
@@ -65,8 +69,8 @@
 	</ul>
 	<ul class="round round-3">
     <% @final.each do |stage| %>
-      <% current_match = get_current_match(stage: "final", team_id: stage.team_id) %>
-      <% enemy_match = get_enemy_match(stage: "final", team_id: stage.team_id) %>
+      <% current_match = get_current_match(stage: "final", team_id: stage.team_id, tournament: @tournament) %>
+      <% enemy_match = get_enemy_match(stage: "final", team_id: stage.team_id, tournament: @tournament) %>
 
       <li class="spacer">&nbsp;</li>
       <li class="game game-top"><%= current_match.team.title %> <span><%= current_match.points %></span></li>
@@ -78,7 +82,7 @@
 	<ul class="round round-3">
 	 <% @final.each do |match| %>
       <li class="spacer">&nbsp;</li>
-      <li class="game game-top <%= match.result %>"><%= match.team.title %> <span><%= match.total_points %></span></li>
+      <li class="game game-top <%= match.result %>"><%= match.team.title %><span>WINNER!!!</span></li>
     <% end %>
     <li class="spacer">&nbsp;</li>
 	</ul>
